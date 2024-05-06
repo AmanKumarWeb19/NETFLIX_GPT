@@ -1,12 +1,17 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkvalidData } from "../utils/Validate";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { auth } from "../utils/firebase";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const name = useRef(null);
+  // const name = useRef(null);
   const email = useRef(null);
   const password = useRef(null);
 
@@ -19,9 +24,47 @@ const Login = () => {
     const msg = checkvalidData(
       email.current.value,
       password.current.value,
-      name.current.value
+      // name.current.value
     );
     setErrorMessage(msg);
+
+    if (msg) return;
+
+    if (!isSignInForm) {
+      // Sign Up Logic
+      createUserWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value,
+        // name.current.value
+      )
+        .then((userCredential) => {
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    } else {
+      // Sign In Logic
+      signInWithEmailAndPassword(
+        auth,
+        email.current.value,
+        password.current.value
+      )
+        .then((userCredential) => {
+          // Signed in
+          const user = userCredential.user;
+          console.log(user);
+        })
+        .catch((error) => {
+          const errorCode = error.code;
+          const errorMessage = error.message;
+          setErrorMessage(errorCode + "-" + errorMessage);
+        });
+    }
   };
 
   return (
@@ -42,7 +85,7 @@ const Login = () => {
         </h1>
         {!isSignInForm && (
           <input
-            ref={name}
+            // ref={name}
             type="text"
             placeholder="Enter Name"
             className="p-4 my-4 w-full bg-gray-800 rounded-lg"
