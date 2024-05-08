@@ -8,6 +8,7 @@ import {
 import { auth } from "../utils/firebase";
 
 const Login = () => {
+  
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [errorMessage, setErrorMessage] = useState(null);
 
@@ -23,7 +24,7 @@ const Login = () => {
     // validate the form data
     const msg = checkvalidData(
       email.current.value,
-      password.current.value,
+      password.current.value
       // name.current.value
     );
     setErrorMessage(msg);
@@ -35,7 +36,7 @@ const Login = () => {
       createUserWithEmailAndPassword(
         auth,
         email.current.value,
-        password.current.value,
+        password.current.value
         // name.current.value
       )
         .then((userCredential) => {
